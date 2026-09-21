@@ -1,16 +1,47 @@
 ---
-const now = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+// 按发布时间倒序取文章
+const posts = (await getCollection('posts'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const recent = posts.slice(0, 8);
 ---
 
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>栀栀的博客</title>
-  </head>
-  <body>
-    <h1>栀栀的博客 🌱</h1>
-    <p>Astro 7.3.3 + pnpm 12.5.1 + Node 24 LTS 最小验证页</p>
-    <p>构建于 {now}</p>
-  </body>
-</html>
+<Base>
+  <header style="margin-bottom:2.5rem">
+    <h1 style="font-size:2rem;margin:0 0 .35rem">
+      <a href="/">栀栀的博客</a>
+    </h1>
+    <p style="margin:0;color:var(--muted)">
+      写代码，也写生活 🌱
+    </p>
+  </header>
+
+  <section>
+    <h2 style="font-size:1.05rem;color:var(--muted);margin:0 0 1rem">最近的文章</h2>
+
+    {recent.length === 0 && (
+      <p style="color:var(--muted)">还没有文章，正在施工喵…</p>
+    )}
+
+    <ul style="list-style:none;padding:0;margin:0">
+      {recent.map((post) => (
+        <li style="margin:0 0 .35rem">
+          <a
+            href={`/posts/${post.data.slug ?? post.id}`}
+            style="display:flex;justify-content:space-between;gap:1rem;align-items:baseline;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;transition:border-color .15s"
+          >
+            <span>{post.data.title}</span>
+            <time
+              datetime={post.data.date.toISOString().slice(0, 10)}
+              style="color:var(--muted);font-size:.85rem;white-space:nowrap"
+            >
+              {post.data.date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Shanghai' })}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>

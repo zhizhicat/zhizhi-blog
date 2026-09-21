@@ -1,0 +1,56 @@
+---
+// 全站默认布局：页面骨架、暗色模式、页脚都在这
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = '栀栀的博客', description = '栀栀的博客 · zhimi.icu' } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <style is:global>
+      :root {
+        --bg: #fdf9ff;
+        --fg: #4a3b5c;
+        --muted: #9b8fae;
+        --accent: #e8a7c3;
+        --card: #ffffff;
+        --border: #f0e3f0;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #241d2b;
+          --fg: #ece4f0;
+          --muted: #9b8fae;
+          --accent: #e8a7c3;
+          --card: #2e2537;
+          --border: #3d3247;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        line-height: 1.75;
+      }
+      a { color: inherit; text-decoration: none; }
+      .wrap { max-width: 680px; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <slot />
+      <footer style="margin-top:4rem;color:var(--muted);font-size:.85rem;border-top:1px solid var(--border);padding-top:1.25rem">
+        栀栀 · <a href="https://github.com/zhizhicat" style="color:var(--accent)">github.com/zhizhicat</a>
+      </footer>
+    </div>
+  </body>
+</html>
