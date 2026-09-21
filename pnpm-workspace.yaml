@@ -3,3 +3,4 @@ allowBuilds:
 engine-strict: true
 onlyBuiltDependencies:
   - esbuild
+  - sharp
