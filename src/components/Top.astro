@@ -1,0 +1,81 @@
+---
+// 顶部栏：毛玻璃常驻 + 暗色切换 + 菜单/搜索入口
+const { siteName = '栀栀的博客' } = Astro.props;
+---
+
+<header class="top">
+  <a class="site" href="/">{siteName}</a>
+  <nav class="actions" aria-label="站点功能">
+    <button class="btn" id="btn-search" aria-label="搜索">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M10 4a6 6 0 1 0 0 12a6 6 0 0 0 0-12m-8 6a8 8 0 1 1 14.32 4.906l5.387 5.387a1 1 0 0 1-1.414 1.414l-5.387-5.387A8 8 0 0 1 2 10" /></svg>
+    </button>
+    <button class="btn" id="btn-theme" aria-label="切换深浅模式">
+      <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"/></svg>
+      <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m0-11.32L4.93 4.93m14.14 14.14-1.41-1.41"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    </button>
+    <button class="btn" id="btn-menu" aria-label="目录菜单">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M3 7h18a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2m18 10H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2m0-4H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2" /></svg>
+    </button>
+  </nav>
+</header>
+
+<style>
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    transition: box-shadow .25s;
+  }
+  .top.scrolled { box-shadow: 0 2px 16px rgba(0,0,0,.07); }
+  .site { font-weight: 700; font-size: 1.05rem; }
+  .site:hover { color: var(--accent); }
+  .actions { display: flex; gap: .25rem; }
+  .btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background .15s, color .15s, transform .1s;
+  }
+  .btn:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+  .btn:active { transform: scale(.92); }
+  .btn svg { width: 21px; height: 21px; }
+  /* 月亮/太阳按模式显隐 */
+  :global(html) .icon-sun { display: none; }
+  :global(html.dark) .icon-sun { display: block; }
+  :global(html.dark) .icon-moon { display: none; }
+  @media (min-width: 768px) {
+    .top { padding-left: 2rem; padding-right: 2rem; }
+  }
+</style>
+
+<script>
+  // 暗色切换：优先记忆用户选择，否则跟随系统
+  const root = document.documentElement;
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark' || (!saved && matchMedia('(prefers-color-scheme: dark)').matches)) {
+    root.classList.add('dark');
+  }
+  document.getElementById('btn-theme')?.addEventListener('click', () => {
+    const dark = root.classList.toggle('dark');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+  });
+  // 滚动后加投影（毛玻璃和内容分层）
+  const top = document.querySelector('.top');
+  addEventListener('scroll', () => top?.classList.toggle('scrolled', scrollY > 8), { passive: true });
+</script>

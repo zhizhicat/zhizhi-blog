@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import Top from '../components/Top.astro';
 
 // 按发布时间倒序取文章
 const posts = (await getCollection('posts'))
@@ -9,7 +10,8 @@ const recent = posts.slice(0, 8);
 ---
 
 <Base>
-  <header style="margin-bottom:2.5rem">
+  <Top />
+  <header style="margin-top:2.5rem;margin-bottom:2.5rem">
     <h1 style="font-size:2rem;margin:0 0 .35rem">
       <a href="/">栀栀的博客</a>
     </h1>
